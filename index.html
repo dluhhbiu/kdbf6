@@ -120,8 +120,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const API_BASE = 'https://api.gametools.network/bf6/stats/?platform=pc&name=';
+        const API_GLOBAL = 'https://api.gametools.network/bfglobal/player/?platform=pc&skip_battlelog=false&name=';
         const REFRESH_INTERVAL = 30000;
         let refreshTimer = null;
+        const createdAtCache = {};
 
         function getNicknames() {
             return document.getElementById('nicknames').value
@@ -138,6 +140,34 @@
             return data;
         }
 
+        async function fetchCreatedAt(name) {
+            try {
+                const res = await fetch(API_GLOBAL + encodeURIComponent(name) + '&_t=' + Date.now());
+                if (!res.ok) return null;
+                const data = await res.json();
+                return data.createdAt || null;
+            } catch { return null; }
+        }
+
+        function applyCreatedAt(container, name, date) {
+            const el = container.querySelector(`.created-at[data-name="${name}"]`);
+            if (el) {
+                el.innerHTML = ` &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Picked up the weapon on this day">${formatDate(date)}</span>`;
+                el.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(t => new bootstrap.Tooltip(t));
+            }
+        }
+
+        function retryCreatedAt(container, name) {
+            fetchCreatedAt(name).then(date => {
+                if (date) {
+                    createdAtCache[name] = date;
+                    applyCreatedAt(container, name, date);
+                } else {
+                    setTimeout(() => retryCreatedAt(container, name), 5000);
+                }
+            });
+        }
+
         function renderCard(data) {
             const kdHuman = data.deaths ? (data.kills / data.deaths).toFixed(3) : '—';
             const allGroup = (data.gameModeGroups || []).find(g => g.gamemodeName === 'All');
@@ -150,7 +180,7 @@
                             <div>
                                 <div class="player-name">${escapeHtml(data.userName)}</div>
                                 <div class="text-secondary" style="font-size:0.85rem">
-                                    ${data.matchesPlayed ?? 0} matches &middot; ${formatHours(data.secondsPlayed)}
+                                    ${data.matchesPlayed ?? 0} matches &middot; ${formatHours(data.secondsPlayed)}<span class="created-at" data-name="${escapeHtml(data.userName)}"></span>
                                 </div>
                             </div>
                         </div>
@@ -177,6 +207,11 @@
             if (!seconds) return '—';
             const h = Math.round(seconds / 3600);
             return h.toLocaleString() + 'h';
+        }
+
+        function formatDate(isoStr) {
+            const d = new Date(isoStr);
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         }
 
         function renderFavWeapon(weapons) {
@@ -243,6 +278,15 @@
             container.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
             document.getElementById('last-update').textContent =
                 'Updated: ' + new Date().toLocaleTimeString();
+
+            // Load creation dates asynchronously, retry every 5s until success
+            names.forEach(name => {
+                if (createdAtCache[name]) {
+                    applyCreatedAt(container, name, createdAtCache[name]);
+                    return;
+                }
+                retryCreatedAt(container, name);
+            });
         }
 
         function startAutoRefresh() {
