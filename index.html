@@ -316,7 +316,7 @@
                     <div class="stat-card p-4 h-100" style="animation-delay: ${index * 0.1}s">
                         ${savedTime ? `<div class="saved-info"><span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Snapshot time — stats are compared against this data">${savedTime}</span><button class="saved-delete" data-player="${escapeHtml(data.userName)}" title="Clear saved data">&#128465;</button></div>` : ''}
                         <div class="d-flex align-items-center mb-3 gap-3">
-                            ${data.avatar ? `<img src="${data.avatar}" class="avatar-img" alt="">` : ''}
+                            <img src="${data.avatar || ''}" class="avatar-img" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22 fill=%22%236e7681%22><rect width=%2264%22 height=%2264%22 rx=%2232%22 fill=%22%2321262d%22/><circle cx=%2232%22 cy=%2224%22 r=%2210%22/><path d=%22M16 52a16 16 0 0 1 32 0%22/></svg>'">
                             <div>
                                 <div class="player-name">${escapeHtml(data.userName)}</div>
                                 <div class="text-secondary" style="font-size:0.85rem">

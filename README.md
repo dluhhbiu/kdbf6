@@ -6,15 +6,18 @@ Single-page web app for tracking Battlefield 6 player statistics in real-time.
 
 ## Features
 
-- Multi-player stats lookup by nickname
-- K/D ratio with bots and humans-only
-- Accuracy, matches played, time played
-- Favorite weapon display with tooltips
+- Multi-player stats lookup via tag chips input
+- Dual K/D ratio: All (with bots) and Humans-only, with kills/deaths breakdown
+- Revives split by Multiplayer and Redsec
+- Top 3 weapons with kills, accuracy, and headshots
+- localStorage snapshots with diff indicators (green/red arrows)
+- Account creation date
 - Auto-refresh every 30 seconds
+- Card entrance animations
 
 ## Usage
 
-Open `index.html` in a browser. Enter player nicknames separated by commas and click Load.
+Open `index.html` in a browser. Type a player nickname and press Enter to add it.
 
 ## API
 
