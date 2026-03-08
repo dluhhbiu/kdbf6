@@ -91,6 +91,44 @@
             height: 32px;
             filter: brightness(0.7);
         }
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            min-height: 48px;
+            cursor: text;
+        }
+        .tags-input .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0,212,255,0.15);
+            border: 1px solid rgba(0,212,255,0.3);
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.9rem;
+            color: #00d4ff;
+        }
+        .tag .tag-remove {
+            cursor: pointer;
+            opacity: 0.6;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .tag .tag-remove:hover {
+            opacity: 1;
+        }
+        .tags-input input {
+            border: none;
+            outline: none;
+            background: transparent;
+            color: #e6edf3;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 100px;
+        }
     </style>
 </head>
 <body>
@@ -102,11 +140,11 @@
 
         <div class="row justify-content-center mb-4">
             <div class="col-lg-8">
-                <div class="input-group input-group-lg">
-                    <input type="text" id="nicknames" class="form-control bg-dark text-light input-glow"
-                           placeholder="Enter nicknames separated by commas"
-                           value="dluhhbiu, just_kip, vladeskos">
-                    <button class="btn btn-outline-info" id="btn-load" type="button">Load</button>
+                <div class="d-flex gap-2">
+                    <div class="tags-input form-control bg-dark input-glow flex-grow-1" id="tags-container">
+                        <input type="text" id="tag-input" placeholder="Type nickname and press Enter">
+                    </div>
+                    <button class="btn btn-outline-info" id="btn-load" type="button" style="height:48px">Load</button>
                 </div>
                 <div class="text-end mt-2">
                     <span class="update-badge" id="last-update"></span>
@@ -125,11 +163,35 @@
         let refreshTimer = null;
         const createdAtCache = {};
 
+        let tags = ['dluhhbiu', 'just_kip', 'vladeskos'];
+
         function getNicknames() {
-            return document.getElementById('nicknames').value
-                .split(',')
-                .map(n => n.trim())
-                .filter(n => n.length > 0);
+            return [...tags];
+        }
+
+        function renderTags() {
+            const container = document.getElementById('tags-container');
+            const input = document.getElementById('tag-input');
+            container.querySelectorAll('.tag').forEach(t => t.remove());
+            tags.forEach((tag, i) => {
+                const el = document.createElement('span');
+                el.className = 'tag';
+                el.innerHTML = `${escapeHtml(tag)}<span class="tag-remove" data-index="${i}">&times;</span>`;
+                container.insertBefore(el, input);
+            });
+        }
+
+        function addTag(name) {
+            name = name.trim();
+            if (name && !tags.includes(name)) {
+                tags.push(name);
+                renderTags();
+            }
+        }
+
+        function removeTag(index) {
+            tags.splice(index, 1);
+            renderTags();
         }
 
         async function fetchPlayer(name) {
@@ -296,11 +358,32 @@
         }
 
         document.getElementById('btn-load').addEventListener('click', startAutoRefresh);
-        document.getElementById('nicknames').addEventListener('keydown', e => {
-            if (e.key === 'Enter') startAutoRefresh();
+
+        document.getElementById('tag-input').addEventListener('keydown', e => {
+            const input = e.target;
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (input.value.trim()) {
+                    addTag(input.value);
+                    input.value = '';
+                }
+                startAutoRefresh();
+            } else if (e.key === 'Backspace' && !input.value && tags.length) {
+                removeTag(tags.length - 1);
+            }
         });
 
-        // Initial load
+        document.getElementById('tags-container').addEventListener('click', e => {
+            if (e.target.classList.contains('tag-remove')) {
+                removeTag(parseInt(e.target.dataset.index));
+                startAutoRefresh();
+            } else {
+                document.getElementById('tag-input').focus();
+            }
+        });
+
+        // Initial render and load
+        renderTags();
         startAutoRefresh();
     </script>
 </body>
