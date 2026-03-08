@@ -1,5 +1,7 @@
 # BF6 Stats Tracker
 
+**[Live Demo](https://dluhhbiu.github.io/kdbf6/)**
+
 Single-page web app for tracking Battlefield 6 player statistics in real-time.
 
 ## Features
