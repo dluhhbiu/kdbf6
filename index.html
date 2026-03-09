@@ -203,7 +203,8 @@
     <script>
         const API_BASE = 'https://api.gametools.network/bf6/stats/?platform=pc&name=';
         const API_GLOBAL = 'https://api.gametools.network/bfglobal/player/?platform=pc&skip_battlelog=false&name=';
-        const REFRESH_INTERVAL = 30000;
+        const REFRESH_INTERVAL = 300000;
+        const REFRESH_INTERVAL_ERROR = 30000;
         let refreshTimer = null;
         function getCreatedAt(name) {
             return localStorage.getItem('bf6_created_' + name.toLowerCase());
@@ -460,11 +461,13 @@
             const results = await Promise.allSettled(names.map(n => fetchPlayer(n)));
 
             let html = '';
+            let hasErrors = false;
             results.forEach((r, i) => {
                 if (r.status === 'fulfilled') {
                     html += renderCard(r.value, i);
                     savePlayerData(names[i], r.value);
                 } else {
+                    hasErrors = true;
                     html += renderError(names[i], r.reason.message, i);
                 }
             });
@@ -490,12 +493,19 @@
                     retryCreatedAt(container, name);
                 }
             });
+
+            scheduleRefresh(hasErrors);
+        }
+
+        function scheduleRefresh(hasErrors) {
+            clearTimeout(refreshTimer);
+            const delay = hasErrors ? REFRESH_INTERVAL_ERROR : REFRESH_INTERVAL;
+            refreshTimer = setTimeout(loadAll, delay);
         }
 
         function startAutoRefresh() {
-            clearInterval(refreshTimer);
+            clearTimeout(refreshTimer);
             loadAll();
-            refreshTimer = setInterval(loadAll, REFRESH_INTERVAL);
         }
 
         document.getElementById('tag-input').addEventListener('keydown', e => {
