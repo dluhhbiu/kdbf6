@@ -244,7 +244,7 @@
         }
 
         async function fetchPlayer(name) {
-            const res = await fetch(API_BASE + encodeURIComponent(name));
+            const res = await fetch(API_BASE + encodeURIComponent(name) + '&_t=' + Date.now());
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (data.errors) throw new Error(data.errors[0] || 'Player not found');
