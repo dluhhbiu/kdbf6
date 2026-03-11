@@ -17,6 +17,7 @@ function createWindow() {
         resizable: true,
         skipTaskbar: true,
         hasShadow: false,
+        roundedCorners: false,
         icon: path.join(__dirname, '..', 'favicon.png'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
