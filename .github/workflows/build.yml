@@ -35,8 +35,16 @@ jobs:
       - name: Build Tauri app
         run: npm run tauri:build
 
+      - name: Find portable exe
+        run: |
+          Get-ChildItem -Path src-tauri/target/release -Filter "*.exe" -File | Where-Object { $_.Name -notmatch "build" } | ForEach-Object { Write-Output $_.FullName }
+        shell: pwsh
+
       - name: Upload portable exe
         uses: actions/upload-artifact@v4
         with:
           name: BF6-Stats-Portable
-          path: src-tauri/target/release/BF6 Stats.exe
+          path: |
+            src-tauri/target/release/BF6 Stats.exe
+            src-tauri/target/release/BF6-Stats.exe
+            src-tauri/target/release/bf6-stats.exe
