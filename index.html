@@ -435,7 +435,7 @@
                             ${w.image ? `<img src="${w.image}" alt="">` : ''}
                             <div>
                                 <div class="weapon-name">${escapeHtml(w.weaponName)}</div>
-                                <span><span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Kills">${(w.kills ?? 0).toLocaleString()} kills</span>${diff(w.kills, sw?.kills)} &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Headshots">${(w.headshots ?? 0).toLocaleString()} hs</span>${diff(w.headshots, sw?.headshots)} &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Accuracy">${w.accuracy || '—'} acc</span></span>
+                                <span><span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Kills">${(w.kills ?? 0).toLocaleString()} kills</span>${diff(w.kills, sw?.kills)} &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Headshot kills">${(w.headshotKills ?? 0).toLocaleString()} hs</span>${diff(w.headshotKills, sw?.headshotKills)} &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Accuracy">${w.accuracy || '—'} acc</span></span>
                             </div>
                         </div>`;
                     }).join('')}
@@ -486,7 +486,7 @@
                     image: w.image,
                     kills: w.kills,
                     accuracy: w.accuracy,
-                    headshots: w.headshots
+                    headshotKills: w.headshotKills
                 }))
             };
 
