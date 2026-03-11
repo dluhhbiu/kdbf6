@@ -26,7 +26,7 @@ Single-page HTML app (`index.html`) that fetches BF6 player stats from GameTools
 - `bf6_tags` — JSON array of player nicknames (persists across reloads, defaults to `['dluhhbiu', 'just_kip', 'vladeskos']`)
 - `bf6_refreshInterval` — selected refresh interval in ms (persists across reloads, default 300000)
 - `bf6_created_{nickname}` — cached account creation date
-- Diff indicators compare current API data vs saved snapshot
+- Diff indicators compare current API data vs saved snapshot (K/D, kills, deaths, revives, weapon kills, weapon headshots)
 
 ## Conventions
 

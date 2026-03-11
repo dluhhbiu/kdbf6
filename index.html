@@ -402,7 +402,7 @@
                                 <div class="stat-value stat-revives">${revivesRS.toLocaleString()}${diff(revivesRS, saved?.revivesRedsec)}</div>
                             </div>
                         </div>
-                        ${renderFavWeapon(data.weapons)}
+                        ${renderFavWeapon(data.weapons, saved?.weapons)}
                     </div>
                 </div>`;
         }
@@ -420,21 +420,25 @@
             return d.toLocaleDateString('en-US', opts);
         }
 
-        function renderFavWeapon(weapons) {
+        function renderFavWeapon(weapons, savedWeapons) {
             if (!weapons || !weapons.length) return '';
             const top3 = [...weapons].sort((a, b) => (b.kills ?? 0) - (a.kills ?? 0)).slice(0, 3);
+            const savedMap = {};
+            if (savedWeapons) savedWeapons.forEach(w => { savedMap[w.weaponName] = w; });
             return `
                 <div class="mt-3">
                     <div class="stat-label mb-2">Top Weapons</div>
-                    ${top3.map(w => `
+                    ${top3.map(w => {
+                        const sw = savedMap[w.weaponName];
+                        return `
                         <div class="fav-weapon mb-2 p-2 d-flex align-items-center gap-2">
                             ${w.image ? `<img src="${w.image}" alt="">` : ''}
                             <div>
                                 <div class="weapon-name">${escapeHtml(w.weaponName)}</div>
-                                <span><span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Kills">${(w.kills ?? 0).toLocaleString()} kills</span> &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Accuracy">${w.accuracy || '—'} acc</span> &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Headshots">${w.headshots || '—'} hs</span></span>
+                                <span><span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Kills">${(w.kills ?? 0).toLocaleString()} kills</span>${diff(w.kills, sw?.kills)} &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Accuracy">${w.accuracy || '—'} acc</span> &middot; <span class="stat-tip" data-bs-toggle="tooltip" data-bs-title="Headshots">${w.headshots || '—'} hs</span>${diff(w.headshots, sw?.headshots)}</span>
                             </div>
-                        </div>
-                    `).join('')}
+                        </div>`;
+                    }).join('')}
                 </div>`;
         }
 
