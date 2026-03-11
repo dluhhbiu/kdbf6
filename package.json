@@ -4,7 +4,7 @@
   "description": "**[Live Demo](https://dluhhbiu.github.io/kdbf6/)**",
   "main": "index.js",
   "scripts": {
-    "copy-ui": "node -e \"const fs=require('fs'),p=require('path'),d=p.join(__dirname,'dist');fs.mkdirSync(d,{recursive:true});fs.copyFileSync('index.html',p.join(d,'index.html'));fs.copyFileSync('favicon.png',p.join(d,'favicon.png'))\"",
+    "copy-ui": "node -e \"const fs=require('fs'),p=require('path'),d=p.join(__dirname,'dist');fs.mkdirSync(d,{recursive:true});['index.html','favicon.png'].forEach(f=>fs.copyFileSync(f,p.join(d,f)))\"",
     "tauri": "tauri",
     "tauri:dev": "npm run copy-ui && tauri dev",
     "tauri:build": "npm run copy-ui && tauri build"
