@@ -3,7 +3,6 @@ const path = require('path');
 
 let win;
 let tray;
-let clickThrough = false;
 
 function createWindow() {
     win = new BrowserWindow({
@@ -62,43 +61,26 @@ function createTray() {
     tray = new Tray(icon.resize({ width: 16, height: 16 }));
     tray.setToolTip('BF6 Stats');
 
-    function buildMenu() {
-        return Menu.buildFromTemplate([
-            {
-                label: 'Show / Hide',
-                click: () => {
-                    if (win.isVisible()) {
-                        win.hide();
-                    } else {
-                        win.show();
-                    }
-                }
-            },
-            {
-                label: clickThrough ? 'Disable Click-Through' : 'Enable Click-Through',
-                click: () => {
-                    clickThrough = !clickThrough;
-                    if (clickThrough) {
-                        win.setIgnoreMouseEvents(true, { forward: true });
-                    } else {
-                        win.setIgnoreMouseEvents(false);
-                    }
-                    win.webContents.send('click-through-changed', clickThrough);
-                    tray.setContextMenu(buildMenu());
-                }
-            },
-            { type: 'separator' },
-            {
-                label: 'Quit',
-                click: () => {
-                    win.removeAllListeners('close');
-                    app.quit();
+    tray.setContextMenu(Menu.buildFromTemplate([
+        {
+            label: 'Show / Hide',
+            click: () => {
+                if (win.isVisible()) {
+                    win.hide();
+                } else {
+                    win.show();
                 }
             }
-        ]);
-    }
-
-    tray.setContextMenu(buildMenu());
+        },
+        { type: 'separator' },
+        {
+            label: 'Quit',
+            click: () => {
+                win.removeAllListeners('close');
+                app.quit();
+            }
+        }
+    ]));
 
     tray.on('click', () => {
         if (win.isVisible()) {
