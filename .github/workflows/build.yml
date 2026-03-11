@@ -1,4 +1,4 @@
-name: Build Tauri App
+name: Build Electron App
 
 on:
   push:
@@ -16,35 +16,14 @@ jobs:
         with:
           node-version: 22
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri -> target
-
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Generate icons from favicon
-        run: |
-          magick favicon.png -resize 256x256 -alpha on PNG32:src-tauri/icons/icon.png
-          magick favicon.png -resize 256x256 -alpha on src-tauri/icons/icon.ico
-
-      - name: Build Tauri app
-        run: npm run tauri:build
-
-      - name: Find portable exe
-        run: |
-          Get-ChildItem -Path src-tauri/target/release -Filter "*.exe" -File | Where-Object { $_.Name -notmatch "build" } | ForEach-Object { Write-Output $_.FullName }
-        shell: pwsh
+      - name: Build Electron app
+        run: npm run build
 
       - name: Upload portable exe
         uses: actions/upload-artifact@v4
         with:
           name: BF6-Stats-Portable
-          path: |
-            src-tauri/target/release/BF6 Stats.exe
-            src-tauri/target/release/BF6-Stats.exe
-            src-tauri/target/release/bf6-stats.exe
+          path: dist/BF6-Stats-Portable.exe

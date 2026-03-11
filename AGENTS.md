@@ -7,6 +7,7 @@ Single-page HTML app (`index.html`) that fetches BF6 player stats from GameTools
 ## Architecture
 
 - **Single file**: `index.html` — contains all HTML, CSS, and JS
+- **Desktop**: Electron (`electron/main.js`, `electron/preload.js`) — transparent always-on-top widget
 - **API stats**: `https://api.gametools.network/bf6/stats/?platform=pc&name=`
 - **API global**: `https://api.gametools.network/bfglobal/player/?platform=pc&skip_battlelog=false&name=` (for createdAt)
 - **Dependencies**: Bootstrap 5.3.3 (CDN), Google Fonts (Chakra Petch, Rajdhani)

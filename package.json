@@ -2,12 +2,11 @@
   "name": "bf6-stats",
   "version": "1.0.0",
   "description": "**[Live Demo](https://dluhhbiu.github.io/kdbf6/)**",
-  "main": "index.js",
+  "main": "electron/main.js",
   "scripts": {
-    "copy-ui": "node -e \"const fs=require('fs'),p=require('path'),d=p.join(__dirname,'dist');fs.mkdirSync(d,{recursive:true});['index.html','favicon.png'].forEach(f=>fs.copyFileSync(f,p.join(d,f)))\"",
-    "tauri": "tauri",
-    "tauri:dev": "npm run copy-ui && tauri dev",
-    "tauri:build": "npm run copy-ui && tauri build"
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "pack": "electron-builder --win --dir"
   },
   "repository": {
     "type": "git",
@@ -16,15 +15,28 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/dluhhbiu/kdbf6/issues"
   },
   "homepage": "https://github.com/dluhhbiu/kdbf6#readme",
   "devDependencies": {
-    "@tauri-apps/cli": "^2.10.1"
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.0"
   },
-  "dependencies": {
-    "@tauri-apps/api": "^2.10.1"
+  "build": {
+    "appId": "com.bf6stats.widget",
+    "productName": "BF6 Stats",
+    "files": [
+      "index.html",
+      "favicon.png",
+      "electron/**/*"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "favicon.png"
+    },
+    "portable": {
+      "artifactName": "BF6-Stats-Portable.exe"
+    }
   }
 }

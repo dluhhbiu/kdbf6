@@ -307,10 +307,10 @@
     </style>
 </head>
 <body>
-    <!-- Widget UI (Tauri only) -->
+    <!-- Widget UI (Electron only) -->
     <div class="widget-only">
         <div class="widget-wrap">
-            <div class="widget-titlebar" data-tauri-drag-region>
+            <div class="widget-titlebar" id="widget-titlebar">
                 <span class="widget-titlebar-title">BF6 Stats</span>
                 <button class="widget-close" id="widget-close">&times;</button>
             </div>
@@ -713,7 +713,7 @@
         });
 
         // === Widget mode ===
-        const isWidget = !!window.__TAURI_INTERNALS__;
+        const isWidget = !!window.electronWidget;
 
         function renderWidgetPlayer(data) {
             const groups = data.gameModeGroups || [];
@@ -777,7 +777,23 @@
 
         if (isWidget) {
             document.body.classList.add('widget-mode');
-            document.getElementById('widget-close').addEventListener('click', () => window.close());
+            document.getElementById('widget-close').addEventListener('click', () => window.electronWidget.close());
+
+            // Titlebar drag
+            const titlebar = document.getElementById('widget-titlebar');
+            titlebar.addEventListener('mousedown', e => {
+                if (e.target.closest('.widget-close')) return;
+                window.electronWidget.startDrag(e.screenX, e.screenY);
+                const onMove = ev => window.electronWidget.drag(ev.screenX, ev.screenY);
+                const onUp = () => {
+                    window.electronWidget.endDrag();
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onUp);
+                };
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+            });
+
             loadWidget();
         } else {
             // Full web mode

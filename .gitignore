@@ -1,5 +1,4 @@
 .claude/
 .env
 node_modules/
-src-tauri/target/
 dist/
