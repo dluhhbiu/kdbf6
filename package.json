@@ -33,7 +33,7 @@
     ],
     "win": {
       "target": "portable",
-      "icon": "favicon.png"
+      "icon": "icon.png"
     },
     "portable": {
       "artifactName": "BF6-Stats-Portable.exe"

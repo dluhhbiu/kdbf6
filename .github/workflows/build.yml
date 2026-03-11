@@ -19,6 +19,9 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Generate 256x256 icon
+        run: magick favicon.png -resize 256x256 -alpha on PNG32:icon.png
+
       - name: Build Electron app
         run: npm run build
 
