@@ -1,8 +1,8 @@
 # BF6 Stats Tracker
 
-**[Live Demo](https://dluhhbiu.github.io/kdbf6/)**
+**[Live Demo](https://dluhhbiu.github.io/kdbf6/)** · **[Download Widget (.exe)](https://github.com/dluhhbiu/kdbf6/releases/tag/latest)**
 
-Single-page web app for tracking Battlefield 6 player statistics in real-time.
+Single-page web app for tracking Battlefield 6 player statistics in real-time. Also available as a transparent desktop widget for Windows.
 
 ## Features
 
@@ -16,7 +16,30 @@ Single-page web app for tracking Battlefield 6 player statistics in real-time.
 - Persistent settings: player nicknames and refresh interval saved in localStorage across page reloads
 - Card entrance animations
 
-## Usage
+## Desktop Widget
+
+Portable .exe for Windows — transparent frameless overlay, always on top.
+
+- Tray icon: left-click to show/hide, right-click for menu (quit)
+- Drag by titlebar, resize from edges
+- Auto-refresh every 60s
+
+### Run from source
+
+```bash
+npm install
+npm start
+```
+
+### Build portable .exe
+
+```bash
+npm run build
+```
+
+Output: `dist/BF6-Stats-Portable.exe`
+
+## Web
 
 Open `index.html` in a browser. Type a player nickname and press Enter to add it.
 

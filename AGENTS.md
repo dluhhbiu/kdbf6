@@ -2,15 +2,24 @@
 
 ## Project Overview
 
-Single-page HTML app (`index.html`) that fetches BF6 player stats from GameTools API and displays them.
+Single-page HTML app (`index.html`) that fetches BF6 player stats from GameTools API and displays them. Desktop widget version via Electron.
 
 ## Architecture
 
-- **Single file**: `index.html` — contains all HTML, CSS, and JS
-- **Desktop**: Electron (`electron/main.js`, `electron/preload.js`) — transparent always-on-top widget
+- **Single file**: `index.html` — contains all HTML, CSS, and JS (both web and widget UI)
+- **Desktop widget**: Electron (`electron/main.js`, `electron/preload.js`) — transparent frameless always-on-top window with tray icon
 - **API stats**: `https://api.gametools.network/bf6/stats/?platform=pc&name=`
 - **API global**: `https://api.gametools.network/bfglobal/player/?platform=pc&skip_battlelog=false&name=` (for createdAt)
-- **Dependencies**: Bootstrap 5.3.3 (CDN), Google Fonts (Chakra Petch, Rajdhani)
+- **Dependencies**: Bootstrap 5.3.3 (CDN), Google Fonts (Chakra Petch, Rajdhani), Electron, electron-builder
+
+## Electron Widget
+
+- `electron/main.js` — main process: frameless transparent window, always-on-top, tray icon (show/hide, quit), drag via IPC
+- `electron/preload.js` — exposes `window.electronWidget` bridge (drag, close)
+- Widget mode detected by `!!window.electronWidget` in index.html
+- Close button and X hide to tray, quit only from tray menu
+- Build: `npm run build` → portable .exe via electron-builder
+- CI generates 256x256 icon from favicon.png (225x225) via ImageMagick
 
 ## Key API Data Notes
 
