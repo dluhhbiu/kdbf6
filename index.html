@@ -250,7 +250,8 @@
     <script>
         const API_BASE = 'https://api.gametools.network/bf6/stats/?platform=pc&name=';
         const API_GLOBAL = 'https://api.gametools.network/bfglobal/player/?platform=pc&skip_battlelog=false&name=';
-        let refreshInterval = 300000;
+        const DEFAULT_TAGS = ['dluhhbiu', 'just_kip', 'vladeskos'];
+        let refreshInterval = parseInt(localStorage.getItem('bf6_refreshInterval')) || 300000;
         const REFRESH_INTERVAL_ERROR = 30000;
         let refreshTimer = null;
         function getCreatedAt(name) {
@@ -260,7 +261,7 @@
             localStorage.setItem('bf6_created_' + name.toLowerCase(), date);
         }
 
-        let tags = ['dluhhbiu', 'just_kip', 'vladeskos'];
+        let tags = JSON.parse(localStorage.getItem('bf6_tags')) || DEFAULT_TAGS;
 
         function getNicknames() {
             return [...tags];
@@ -278,17 +279,23 @@
             });
         }
 
+        function saveTags() {
+            localStorage.setItem('bf6_tags', JSON.stringify(tags));
+        }
+
         function addTag(name) {
             name = name.trim();
             if (name && !tags.includes(name)) {
                 tags.push(name);
                 renderTags();
+                saveTags();
             }
         }
 
         function removeTag(index) {
             tags.splice(index, 1);
             renderTags();
+            saveTags();
         }
 
         async function fetchPlayer(name) {
@@ -595,12 +602,17 @@
             document.querySelectorAll('.refresh-btns button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             refreshInterval = parseInt(btn.dataset.interval);
+            localStorage.setItem('bf6_refreshInterval', refreshInterval);
             // Reschedule with new interval
             clearTimeout(refreshTimer);
             refreshTimer = setTimeout(loadAll, refreshInterval);
         });
 
         // Initial render and load
+        // Restore active refresh button from saved interval
+        document.querySelectorAll('.refresh-btns button').forEach(b => {
+            b.classList.toggle('active', parseInt(b.dataset.interval) === refreshInterval);
+        });
         renderTags();
         startAutoRefresh();
     </script>

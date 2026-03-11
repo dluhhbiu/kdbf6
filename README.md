@@ -12,7 +12,8 @@ Single-page web app for tracking Battlefield 6 player statistics in real-time.
 - Top 3 weapons with kills, accuracy, and headshots
 - localStorage snapshots with diff indicators (green/red arrows)
 - Account creation date
-- Auto-refresh every 30 seconds
+- Configurable auto-refresh interval (10s, 30s, 1m, 5m) with error retry at 30s
+- Persistent settings: player nicknames and refresh interval saved in localStorage across page reloads
 - Card entrance animations
 
 ## Usage
