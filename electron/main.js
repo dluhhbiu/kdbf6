@@ -28,6 +28,13 @@ function createWindow() {
 
     win.loadFile(path.join(__dirname, '..', 'index.html'));
 
+    // Fix white corners when window loses focus on Windows
+    win.on('blur', () => {
+        const size = win.getSize();
+        win.setSize(size[0], size[1] + 1);
+        win.setSize(size[0], size[1]);
+    });
+
     win.on('close', (e) => {
         // Hide to tray instead of closing
         e.preventDefault();
