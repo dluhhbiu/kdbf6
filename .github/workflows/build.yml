@@ -8,6 +8,8 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -24,9 +26,20 @@ jobs:
 
       - name: Build Electron app
         run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload portable exe
+      - name: Upload portable exe as artifact
         uses: actions/upload-artifact@v4
         with:
           name: BF6-Stats-Portable
           path: dist/BF6-Stats-Portable.exe
+
+      - name: Create/update rolling release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Build
+          body: "Portable .exe — download and run, no installation needed."
+          prerelease: true
+          files: dist/BF6-Stats-Portable.exe

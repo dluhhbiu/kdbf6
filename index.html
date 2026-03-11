@@ -304,6 +304,9 @@
         }
         .widget-only { display: none; }
         body.widget-mode .widget-only { display: block; }
+        body.click-through .widget-wrap {
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
@@ -792,6 +795,11 @@
                 };
                 document.addEventListener('mousemove', onMove);
                 document.addEventListener('mouseup', onUp);
+            });
+
+            // Click-through visual feedback
+            window.electronWidget.onClickThroughChanged(enabled => {
+                document.body.classList.toggle('click-through', enabled);
             });
 
             loadWidget();
