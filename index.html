@@ -138,6 +138,15 @@
             border-color: rgba(0,212,255,0.4);
             color: #00d4ff;
         }
+        .refresh-btns button.off-btn.active {
+            background: rgba(248,81,73,0.15);
+            border-color: rgba(248,81,73,0.4);
+            color: #f85149;
+        }
+        .refresh-btns button.off-btn:hover {
+            border-color: rgba(248,81,73,0.4);
+            color: #f85149;
+        }
         .spinner-container {
             min-height: 200px;
         }
@@ -338,6 +347,7 @@
                         <button data-interval="30000">30s</button>
                         <button data-interval="60000">1m</button>
                         <button data-interval="300000" class="active">5m</button>
+                        <button class="off-btn" data-interval="0">Off</button>
                     </div>
                 </div>
             </div>
@@ -351,7 +361,8 @@
         const API_BASE = 'https://api.gametools.network/bf6/stats/?platform=pc&name=';
         const API_GLOBAL = 'https://api.gametools.network/bfglobal/player/?platform=pc&skip_battlelog=false&name=';
         const DEFAULT_TAGS = ['dluhhbiu', 'just_kip', 'vladeskos'];
-        let refreshInterval = parseInt(localStorage.getItem('bf6_refreshInterval')) || 300000;
+        const storedInterval = localStorage.getItem('bf6_refreshInterval');
+        let refreshInterval = storedInterval !== null ? parseInt(storedInterval) : 300000;
         const REFRESH_INTERVAL_ERROR = 30000;
         let refreshTimer = null;
         function getCreatedAt(name) {
@@ -563,7 +574,12 @@
         function savePlayerData(name, data) {
             const key = 'bf6_' + name.toLowerCase();
             const existing = JSON.parse(localStorage.getItem(key) || 'null');
-            if (existing && (Date.now() - existing.savedAt) < DAY_MS) return;
+            if (existing) {
+                const elapsed = Date.now() - existing.savedAt;
+                const savedUTCDay = new Date(existing.savedAt).toISOString().slice(0, 10);
+                const nowUTCDay = new Date().toISOString().slice(0, 10);
+                if (elapsed < DAY_MS && savedUTCDay === nowUTCDay) return;
+            }
 
             const groups = data.gameModeGroups || [];
             const allGroup = groups.find(g => g.gamemodeName === 'All');
@@ -657,6 +673,7 @@
 
         function scheduleRefresh(hasErrors) {
             clearTimeout(refreshTimer);
+            if (refreshInterval === 0) return;
             const delay = hasErrors ? REFRESH_INTERVAL_ERROR : refreshInterval;
             refreshTimer = setTimeout(loadAll, delay);
         }
@@ -707,9 +724,10 @@
             btn.classList.add('active');
             refreshInterval = parseInt(btn.dataset.interval);
             localStorage.setItem('bf6_refreshInterval', refreshInterval);
-            // Reschedule with new interval
             clearTimeout(refreshTimer);
-            refreshTimer = setTimeout(loadAll, refreshInterval);
+            if (refreshInterval > 0) {
+                refreshTimer = setTimeout(loadAll, refreshInterval);
+            }
         });
 
         // === Widget mode ===
