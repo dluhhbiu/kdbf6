@@ -533,7 +533,7 @@
 
         function renderFavWeapon(weapons, savedWeapons) {
             if (!weapons || !weapons.length) return '';
-            const top3 = [...weapons].sort((a, b) => (b.kills ?? 0) - (a.kills ?? 0)).slice(0, 3);
+            const top3 = [...weapons].sort((a, b) => (b.kills ?? 0) - (a.kills ?? 0)).slice(0, 5);
             const savedMap = {};
             if (savedWeapons) savedWeapons.forEach(w => { savedMap[w.weaponName] = w; });
             return `
@@ -584,7 +584,7 @@
             const groups = data.gameModeGroups || [];
             const allGroup = groups.find(g => g.gamemodeName === 'All');
             const rsGroup = groups.find(g => g.gamemodeName === 'Redsec');
-            const top3 = [...(data.weapons || [])].sort((a, b) => (b.kills ?? 0) - (a.kills ?? 0)).slice(0, 3);
+            const top3 = [...(data.weapons || [])].sort((a, b) => (b.kills ?? 0) - (a.kills ?? 0)).slice(0, 5);
 
             const snapshot = {
                 userName: data.userName,
@@ -610,8 +610,10 @@
         }
 
         let animateNext = true;
+        let loadGeneration = 0;
 
         async function loadAll() {
+            const gen = ++loadGeneration;
             const names = getNicknames();
             const container = document.getElementById('stats-container');
 
@@ -633,6 +635,9 @@
             }
 
             const results = await Promise.allSettled(names.map(n => fetchPlayer(n)));
+
+            // Stale response — a newer loadAll() was triggered, skip DOM update
+            if (gen !== loadGeneration) return;
 
             let html = '';
             let hasErrors = false;

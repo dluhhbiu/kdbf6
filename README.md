@@ -9,7 +9,7 @@ Single-page web app for tracking Battlefield 6 player statistics in real-time. A
 - Multi-player stats lookup via tag chips input
 - Dual K/D ratio: All (with bots) and Humans-only, with kills/deaths breakdown
 - Revives split by Multiplayer and Redsec
-- Top 3 weapons with kills, headshots (with diff indicators), and accuracy
+- Top 5 weapons with kills, headshots (with diff indicators), and accuracy
 - localStorage snapshots with diff indicators (green/red arrows) for K/D, kills, deaths, revives, and weapon stats
 - Account creation date
 - Configurable auto-refresh interval (10s, 30s, 1m, 5m) with error retry at 30s

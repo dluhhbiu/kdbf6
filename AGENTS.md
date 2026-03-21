@@ -27,7 +27,7 @@ Single-page HTML app (`index.html`) that fetches BF6 player stats from GameTools
 - `gameModeGroups` — "All" (includes bots), "Multiplayer", "Redsec", "Battle Royale", "Portal"
 - K/D is calculated manually (`kills / deaths`) for precision, not taken from API's rounded `killDeath`
 - Revives MP = `All.revives - Redsec.revives`
-- Weapons sorted by kills, top 3 displayed; shown as: kills, headshots, accuracy (in that order)
+- Weapons sorted by kills, top 5 displayed; shown as: kills, headshots, accuracy (in that order)
 - No level/rank fields in API, no human/bot revive distinction
 
 ## localStorage
